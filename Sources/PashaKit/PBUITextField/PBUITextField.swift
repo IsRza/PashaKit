@@ -487,7 +487,7 @@ public class PBUITextField: UIView {
         self.customBorder.addSubview(self.customTextField)
         self.customBorder.addSubview(self.customRightView)
         self.customRightView.addSubview(self.iconImage)
-        self.addSubview(self.footerLabel)
+//        self.addSubview(self.footerLabel)
     }
 
     private func setupStyleOfTextField(basedOn style: TextFieldStyle) {
