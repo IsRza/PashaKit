@@ -457,7 +457,7 @@ open class PBRowView: UIView, PBSkeletonable {
     open override func layoutSubviews() {
         super.layoutSubviews()
 
-        let margins = self.directionalLayoutMargins
+        let margins = self.customLayoutMargins
 
         NSLayoutConstraint.activate([
             self.primaryStackView.topAnchor.constraint(equalTo: self.topAnchor, constant: margins.top),
