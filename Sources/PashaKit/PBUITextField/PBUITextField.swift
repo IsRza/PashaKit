@@ -571,7 +571,7 @@ public class PBUITextField: UIView {
 
         case .underlined:
             NSLayoutConstraint.activate([
-                self.customTextField.topAnchor.constraint(equalTo: self.customBorder.topAnchor),
+                self.customTextField.topAnchor.constraint(equalTo: self.customBorder.topAnchor, constant: 10),
                 self.customTextField.leftAnchor.constraint(equalTo: self.customBorder.leftAnchor),
                 self.customTextField.bottomAnchor.constraint(equalTo: self.customBorder.bottomAnchor),
                 self.customTextField.rightAnchor.constraint(equalTo: self.customBorder.rightAnchor)
