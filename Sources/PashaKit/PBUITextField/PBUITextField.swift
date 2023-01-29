@@ -406,6 +406,8 @@ public class PBUITextField: UIView {
         textField.delegate = self
         textField.backgroundColor = .clear
 
+        textField.heightAnchor.constraint(equalToConstant: 36.0).isActive = true
+
         return textField
     }()
 
