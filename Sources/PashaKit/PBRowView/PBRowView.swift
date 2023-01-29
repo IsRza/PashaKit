@@ -454,6 +454,19 @@ open class PBRowView: UIView, PBSkeletonable {
         self.setupViews()
     }
 
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+
+        let margins = self.directionalLayoutMargins
+
+        NSLayoutConstraint.activate([
+            self.primaryStackView.topAnchor.constraint(equalTo: self.topAnchor, constant: margins.top),
+            self.primaryStackView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: margins.leading),
+            self.primaryStackView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -margins.bottom),
+            self.primaryStackView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -margins.trailing)
+        ])
+    }
+
     /// Sets data for a row view.
     ///
     /// - Parameters:
