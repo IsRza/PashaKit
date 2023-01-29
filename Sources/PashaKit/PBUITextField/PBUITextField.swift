@@ -106,7 +106,7 @@ public class PBUITextField: UIView {
     public var footerLabelText: String? = nil {
         didSet {
             self.footerLabel.text = self.footerLabelText
-            self.setNeedsLayout()
+            self.adjustFooterView()
         }
     }
 
@@ -363,6 +363,20 @@ public class PBUITextField: UIView {
 
     private var isComplete: Bool = false
 
+    private lazy var contentStackView: UIStackView = {
+        let view = UIStackView()
+
+        self.addSubview(view)
+
+        view.translatesAutoresizingMaskIntoConstraints = false
+
+        view.distribution = .fill
+        view.alignment = .center
+        view.axis = .vertical
+
+        return view
+    }()
+
     private lazy var customBorder: UIView = {
         let customBorder = UIView()
 
@@ -427,6 +441,8 @@ public class PBUITextField: UIView {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.textColor = self.placeholderTextColor
 
+        view.heightAnchor.constraint(equalToConstant: 24.0).isActive = true
+
         return view
     }()
 
@@ -482,12 +498,21 @@ public class PBUITextField: UIView {
 
     private func setupViews() {
 
-        self.addSubview(self.customBorder)
         self.customBorder.addSubview(self.customPlaceholder)
         self.customBorder.addSubview(self.customTextField)
         self.customBorder.addSubview(self.customRightView)
         self.customRightView.addSubview(self.iconImage)
-//        self.addSubview(self.footerLabel)
+
+        self.contentStackView.addArrangedSubview(self.customBorder)
+    }
+
+    private func adjustFooterView() {
+        if self.footerLabel.text == nil || self.footerLabel.text == "" {
+            self.footerLabel.removeFromSuperview()
+        } else {
+            self.contentStackView.addArrangedSubview(self.footerLabel)
+            self.setupFooterConstraints(for: self.textFieldStyle)
+        }
     }
 
     private func setupStyleOfTextField(basedOn style: TextFieldStyle) {
@@ -512,24 +537,24 @@ public class PBUITextField: UIView {
         self.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
-            self.customBorder.topAnchor.constraint(equalTo: self.topAnchor),
-            self.customBorder.leftAnchor.constraint(equalTo: self.leftAnchor),
-            self.customBorder.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -24.0),
-            self.customBorder.rightAnchor.constraint(equalTo: self.rightAnchor)
+            self.contentStackView.topAnchor.constraint(equalTo: self.topAnchor),
+            self.contentStackView.leftAnchor.constraint(equalTo: self.leftAnchor),
+            self.contentStackView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            self.contentStackView.rightAnchor.constraint(equalTo: self.rightAnchor)
+        ])
+
+        NSLayoutConstraint.activate([
+            self.customBorder.leftAnchor.constraint(equalTo: self.contentStackView.leftAnchor),
+            self.customBorder.rightAnchor.constraint(equalTo: self.contentStackView.rightAnchor)
         ])
 
         switch style {
         case .bordered:
             NSLayoutConstraint.activate([
+                self.customTextField.topAnchor.constraint(equalTo: self.customBorder.topAnchor, constant: 10),
                 self.customTextField.leftAnchor.constraint(equalTo: self.customBorder.leftAnchor, constant: self.leftPadding),
-                self.customTextField.rightAnchor.constraint(equalTo: self.customBorder.rightAnchor, constant: -self.leftPadding),
-                self.customTextField.centerYAnchor.constraint(equalTo: self.customBorder.centerYAnchor)
-            ])
-
-            NSLayoutConstraint.activate([
-                self.footerLabel.topAnchor.constraint(equalTo: self.customBorder.bottomAnchor, constant: 6),
-                self.footerLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: self.leftPadding),
-                self.footerLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -self.leftPadding)
+                self.customTextField.bottomAnchor.constraint(equalTo: self.customBorder.bottomAnchor, constant: -10),
+                self.customTextField.rightAnchor.constraint(equalTo: self.customBorder.rightAnchor, constant: -self.leftPadding)
             ])
 
             NSLayoutConstraint.activate([
@@ -546,16 +571,10 @@ public class PBUITextField: UIView {
 
         case .underlined:
             NSLayoutConstraint.activate([
+                self.customTextField.topAnchor.constraint(equalTo: self.customBorder.topAnchor),
                 self.customTextField.leftAnchor.constraint(equalTo: self.customBorder.leftAnchor),
-                self.customTextField.rightAnchor.constraint(equalTo: self.customBorder.rightAnchor),
-                self.customTextField.centerYAnchor.constraint(equalTo: self.centerYAnchor)
-            ])
-
-            NSLayoutConstraint.activate([
-                self.footerLabel.topAnchor.constraint(equalTo: self.customBorder.bottomAnchor),
-                self.footerLabel.leftAnchor.constraint(equalTo: self.leftAnchor),
-                self.footerLabel.rightAnchor.constraint(equalTo: self.rightAnchor),
-                self.footerLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+                self.customTextField.bottomAnchor.constraint(equalTo: self.customBorder.bottomAnchor),
+                self.customTextField.rightAnchor.constraint(equalTo: self.customBorder.rightAnchor)
             ])
 
             NSLayoutConstraint.activate([
@@ -575,6 +594,21 @@ public class PBUITextField: UIView {
         self.activeConstraints = self.notEditingConstraints
 
         self.setNeedsLayout()
+    }
+
+    private func setupFooterConstraints(for style: TextFieldStyle) {
+        switch style {
+        case .bordered:
+            NSLayoutConstraint.activate([
+                self.footerLabel.leftAnchor.constraint(equalTo: self.contentStackView.leftAnchor, constant: self.leftPadding),
+                self.footerLabel.rightAnchor.constraint(equalTo: self.contentStackView.rightAnchor, constant: -self.leftPadding)
+            ])
+        case .underlined:
+            NSLayoutConstraint.activate([
+                self.footerLabel.leftAnchor.constraint(equalTo: self.leftAnchor),
+                self.footerLabel.rightAnchor.constraint(equalTo: self.rightAnchor),
+            ])
+        }
     }
 
     private func setupRightIconConstraints(for iconSize: RightIconSize) {
@@ -625,6 +659,8 @@ public class PBUITextField: UIView {
             self.footerLabel.textColor = self.errorStateColor
             self.footerLabel.text = error
         }
+
+        self.adjustFooterView()
     }
 
     private func updateInputBorder() {
