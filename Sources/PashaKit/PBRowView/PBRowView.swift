@@ -134,6 +134,7 @@ open class PBRowView: UIView, PBSkeletonable {
     public var subtitleText: String? {
         didSet {
             self.subtitleLabel.text = self.subtitleText
+            self.setupTitleAndSubtitlePlacement()
         }
     }
 
