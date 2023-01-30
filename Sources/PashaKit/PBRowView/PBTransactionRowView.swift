@@ -358,8 +358,9 @@ public class PBTransactionRowView: UIView, PBSkeletonable {
         ])
         
         NSLayoutConstraint.activate([
+            self.dateLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 100.0),
             self.statusView.topAnchor.constraint(equalTo: self.amountLabel.bottomAnchor, constant: 4.0),
-            self.statusView.leftAnchor.constraint(greaterThanOrEqualTo: self.dateLabel.leftAnchor),
+            self.dateLabel.leftAnchor.constraint(equalTo: self.descriptionLabel.rightAnchor, constant: 8.0),
             self.statusView.rightAnchor.constraint(equalTo: self.transactionInfoContainerView.rightAnchor),
             self.statusView.bottomAnchor.constraint(equalTo: self.transactionInfoContainerView.bottomAnchor),
         ])
