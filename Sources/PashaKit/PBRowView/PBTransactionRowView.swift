@@ -218,6 +218,8 @@ public class PBTransactionRowView: UIView, PBSkeletonable {
     lazy var statusView: UIView = {
         let view = UIView()
         
+        self.transactionInfoContainerView.addSubview(view)
+        
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.cornerRadius = 6
         
@@ -227,7 +229,7 @@ public class PBTransactionRowView: UIView, PBSkeletonable {
     lazy var statusLabel: UILabel = {
         let label = UILabel()
         
-        self.transactionInfoContainerView.addSubview(label)
+        self.statusView.addSubview(label)
 
         label.translatesAutoresizingMaskIntoConstraints = false
 
