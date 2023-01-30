@@ -223,6 +223,7 @@ public class PBTransactionRowView: UIView, PBSkeletonable {
         label.translatesAutoresizingMaskIntoConstraints = false
 
         label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
+        label.layer.cornerRadius = 6
         label.textAlignment = .right
         label.numberOfLines = 1
         label.isHidden = true
@@ -390,20 +391,25 @@ public class PBTransactionRowView: UIView, PBSkeletonable {
         self.descriptionLabel.text = categoryName ?? transaction.descriptionText
         self.amountLabel.text = transaction.amountText
         self.amountLabel.textColor = transaction.amountTextColor
-        
-        switch transaction.theme {
+        self.dateLabel.text = transaction.dateText
+        self.configTheme(theme: transaction.theme)
+    }
+    
+    private func configTheme(theme: TransactionRepresentableTheme) {
+        switch theme {
         case .complete:
-            self.dateLabel.text = transaction.dateText
             self.dateLabel.isHidden = false
             self.statusLabel.isHidden = true
         case .inProgress(let info):
             self.statusLabel.text = info
-            self.statusLabel.textColor = .yellow
+            self.statusLabel.textColor = UIColor.Colors.PBStatusYellowFG
+            self.statusLabel.backgroundColor = UIColor.Colors.PBStatusYellowBG
             self.statusLabel.isHidden = false
             self.dateLabel.isHidden = true
         case .unsuccessful(let info):
             self.statusLabel.text = info
-            self.statusLabel.textColor = .red
+            self.statusLabel.textColor = UIColor.Colors.PBStatusRedFG
+            self.statusLabel.backgroundColor = UIColor.Colors.PBStatusRedBG
             self.statusLabel.isHidden = false
             self.dateLabel.isHidden = true
         }
