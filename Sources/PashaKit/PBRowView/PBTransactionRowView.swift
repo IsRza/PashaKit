@@ -215,6 +215,15 @@ public class PBTransactionRowView: UIView, PBSkeletonable {
         return label
     }()
     
+    lazy var statusView: UIView = {
+        let view = UIView()
+        
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.cornerRadius = 6
+        
+        return view
+    }()
+    
     lazy var statusLabel: UILabel = {
         let label = UILabel()
         
@@ -223,8 +232,7 @@ public class PBTransactionRowView: UIView, PBSkeletonable {
         label.translatesAutoresizingMaskIntoConstraints = false
 
         label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
-        label.layer.cornerRadius = 6
-        label.textAlignment = .right
+        label.textAlignment = .center
         label.numberOfLines = 1
         label.isHidden = true
         
@@ -348,13 +356,20 @@ public class PBTransactionRowView: UIView, PBSkeletonable {
         ])
         
         NSLayoutConstraint.activate([
-            self.statusLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 100.0),
-            self.statusLabel.topAnchor.constraint(equalTo: self.amountLabel.bottomAnchor, constant: 4.0),
-            self.statusLabel.leftAnchor.constraint(equalTo: self.descriptionLabel.rightAnchor, constant: 8.0),
-            self.statusLabel.rightAnchor.constraint(equalTo: self.transactionInfoContainerView.rightAnchor),
-            self.statusLabel.bottomAnchor.constraint(equalTo: self.transactionInfoContainerView.bottomAnchor),
+            self.statusView.widthAnchor.constraint(lessThanOrEqualToConstant: 100.0),
+            self.statusView.topAnchor.constraint(equalTo: self.amountLabel.bottomAnchor, constant: 4.0),
+            self.statusView.leftAnchor.constraint(equalTo: self.descriptionLabel.rightAnchor, constant: 8.0),
+            self.statusView.rightAnchor.constraint(equalTo: self.transactionInfoContainerView.rightAnchor),
+            self.statusView.bottomAnchor.constraint(equalTo: self.transactionInfoContainerView.bottomAnchor),
         ])
-
+        
+        NSLayoutConstraint.activate([
+            self.statusLabel.topAnchor.constraint(equalTo: self.statusView.topAnchor, constant: 2.0),
+            self.statusLabel.leftAnchor.constraint(equalTo: self.statusView.leftAnchor, constant: 8.0),
+            self.statusLabel.rightAnchor.constraint(equalTo: self.statusView.rightAnchor, constant: 8.0),
+            self.statusLabel.bottomAnchor.constraint(equalTo: self.statusView.bottomAnchor, constant: 2.0),
+        ])
+        
         self.setupDividerConstraints(by: self.dividerStyle)
     }
 
@@ -399,18 +414,18 @@ public class PBTransactionRowView: UIView, PBSkeletonable {
         switch theme {
         case .complete:
             self.dateLabel.isHidden = false
-            self.statusLabel.isHidden = true
+            self.statusView.isHidden = true
         case .inProgress(let info):
             self.statusLabel.text = info
             self.statusLabel.textColor = UIColor.Colors.PBStatusYellowFG
-            self.statusLabel.backgroundColor = UIColor.Colors.PBStatusYellowBG
-            self.statusLabel.isHidden = false
+            self.statusView.backgroundColor = UIColor.Colors.PBStatusYellowBG
+            self.statusView.isHidden = false
             self.dateLabel.isHidden = true
         case .unsuccessful(let info):
             self.statusLabel.text = info
             self.statusLabel.textColor = UIColor.Colors.PBStatusRedFG
-            self.statusLabel.backgroundColor = UIColor.Colors.PBStatusRedBG
-            self.statusLabel.isHidden = false
+            self.statusView.backgroundColor = UIColor.Colors.PBStatusRedBG
+            self.statusView.isHidden = false
             self.dateLabel.isHidden = true
         }
     }
