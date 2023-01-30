@@ -214,6 +214,21 @@ public class PBTransactionRowView: UIView, PBSkeletonable {
 
         return label
     }()
+    
+    lazy var statusLabel: UILabel = {
+        let label = UILabel()
+        
+        self.transactionInfoContainerView.addSubview(label)
+
+        label.translatesAutoresizingMaskIntoConstraints = false
+
+        label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
+        label.textAlignment = .right
+        label.numberOfLines = 1
+        label.isHidden = true
+        
+        return label
+    }()
 
     private lazy var chevronView: UIImageView = {
         let view = UIImageView()
@@ -330,6 +345,14 @@ public class PBTransactionRowView: UIView, PBSkeletonable {
             self.dateLabel.rightAnchor.constraint(equalTo: self.transactionInfoContainerView.rightAnchor),
             self.dateLabel.bottomAnchor.constraint(equalTo: self.transactionInfoContainerView.bottomAnchor),
         ])
+        
+        NSLayoutConstraint.activate([
+            self.statusLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 100.0),
+            self.statusLabel.topAnchor.constraint(equalTo: self.amountLabel.bottomAnchor, constant: 4.0),
+            self.statusLabel.leftAnchor.constraint(equalTo: self.descriptionLabel.rightAnchor, constant: 8.0),
+            self.statusLabel.rightAnchor.constraint(equalTo: self.transactionInfoContainerView.rightAnchor),
+            self.statusLabel.bottomAnchor.constraint(equalTo: self.transactionInfoContainerView.bottomAnchor),
+        ])
 
         self.setupDividerConstraints(by: self.dividerStyle)
     }
@@ -367,7 +390,23 @@ public class PBTransactionRowView: UIView, PBSkeletonable {
         self.descriptionLabel.text = categoryName ?? transaction.descriptionText
         self.amountLabel.text = transaction.amountText
         self.amountLabel.textColor = transaction.amountTextColor
-        self.dateLabel.text = transaction.dateText
+        
+        switch transaction.theme {
+        case .complete:
+            self.dateLabel.text = transaction.dateText
+            self.dateLabel.isHidden = false
+            self.statusLabel.isHidden = true
+        case .inProgress(let info):
+            self.statusLabel.text = info
+            self.statusLabel.textColor = .yellow
+            self.statusLabel.isHidden = false
+            self.dateLabel.isHidden = true
+        case .unsuccessful(let info):
+            self.statusLabel.text = info
+            self.statusLabel.textColor = .red
+            self.statusLabel.isHidden = false
+            self.dateLabel.isHidden = true
+        }
     }
 
     /// Starts showing animated skeleton view
