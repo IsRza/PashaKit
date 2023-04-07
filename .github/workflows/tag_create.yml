@@ -1,0 +1,38 @@
+name: Tag Create
+
+on:
+  push:
+    branches: "main"
+
+jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Echo Version
+      id: echo_version
+      run: |
+        python CI/echo_version.py >> "$GITHUB_OUTPUT" 
+
+    - name: Creating Tag
+      id: create_tag
+      uses: rickstaa/action-create-tag@v1
+      with:
+        tag: ${{ steps.echo_version.outputs.version }}
+        github_token: ${{ secrets.TAG_CREATE_TOKEN }}
+        tag_exists_error: true
+
+    - name: Result
+      run: |
+        echo "Tag already present: ${{ steps.create_tag.outputs.tag_exists }}"
+        echo "Tag already present: ${{ env.TAG_EXISTS }}"
+
+ 
